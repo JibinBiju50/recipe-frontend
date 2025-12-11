@@ -1,5 +1,4 @@
 import {React, useState } from "react";
-import { SearchRecipies } from "../service/recipeAPI";
 
 export default function SearchBar({onSearch}) {
     //state to hold the values giving in searchbar

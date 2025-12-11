@@ -1,5 +1,5 @@
 
-const API_URL = "https://recipe-backend-xdi5.onrender.com";
+const API_URL = "https://recipe-backend-xdi5.onrender.com/api/recipes";
 
 //function to search and get the recipes
 export const SearchRecipies = async (query) => {
