@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getRecipeDetails } from '../service/recipeAPI';
-import Ingredient from '../components/Ingredient';
 import {Link} from 'react-router-dom'
 
 export default function RecipePage() {

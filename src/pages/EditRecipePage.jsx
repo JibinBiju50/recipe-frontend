@@ -2,11 +2,10 @@ import React, {useState, useEffect} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {getRecipeDetails, updateRecipe} from '../service/recipeAPI'
 import toast from 'react-hot-toast';
-
+import { API_BASE } from '../config';
 
 export default function EditRecipePage(){
     const {recipeId} = useParams();
-
     const navigate = useNavigate();
 
     // State for form fields
@@ -14,11 +13,12 @@ export default function EditRecipePage(){
        title: '',
        ingredients: '', 
        instructions: '',
-       cookingTime: ''
+       cookingTime: '',
+       image: ''
     });
 
     const [loading, setLoading] = useState(true)
-    
+    const [uploading, setUploading] = useState(false);
     //Fetch the existing data when page loads
     useEffect(()=>{
        const fetchData = async ()=>{
@@ -27,10 +27,11 @@ export default function EditRecipePage(){
 
             //pre-fill the form with existing data
             setFormData({
-                title: data.title,
-                ingredients: data.ingredients.join(', '),
-                instructions: data.instructions,
-                cookingTime: data.cookingTime
+              title: data.title,
+              ingredients: data.ingredients.join('\n'),
+              instructions: data.instructions,
+              cookingTime: data.cookingTime,
+              image: data.image || ''
             })
         } catch(error){
             alert("Failed to load existing recipe")
@@ -43,20 +44,48 @@ export default function EditRecipePage(){
 
     //Handle Input changes
     const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+      const { name, value } = e.target;
+    setFormData(prev => ({...prev, [name]: value}));
     };
+
+    //Handle image upload to cloudinary
+    const handleImageUpload = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      setUploading(true);
+      const uploadData = new FormData();
+      uploadData.append('image', file);
+
+      try{
+        const response = await fetch(`${API_BASE}/api/upload`, {
+          method: 'POST',
+          body: uploadData
+        })
+        const data = await response.json();
+        setFormData(prev => ({...prev, image: data.imageUrl}));
+      } catch(error){
+        console.error('Error uploading image:', error);
+        toast.error('Failed to upload image');
+      } finally {
+        setUploading(false);
+      }
+      }
     
     //Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         // Prepare data for backend
-        // 1. Split ingredients string into an array: "pasta, sauce" -> ["pasta", "sauce"]
+        // 1. Split ingredients by newlines: "egg\nflour" -> ["egg", "flour"]
         const formattedData = {
           ...formData,
-          ingredients: formData.ingredients.split(',').map(item => item.trim()),
+          ingredients: formData.ingredients.split('\n').map(item => item.trim()).filter(Boolean),
           cookingTime: Number(formData.cookingTime)
         };
+
+        console.log("Sending to backend:", formattedData);  // ← Add this
+        console.log("Image URL:", formattedData.image);  
     
         try {
           await updateRecipe(recipeId, formattedData);
@@ -82,8 +111,16 @@ export default function EditRecipePage(){
 
         {/* Ingredients */}
         <div>
-          <label className="block font-bold mb-2">Ingredients (comma separated)</label>
-          <input name="ingredients" value={formData.ingredients} onChange={handleChange} className="w-full p-2 border rounded" required />
+          <label className="block font-bold mb-2">Ingredients (one per line)</label>
+          <textarea
+            name="ingredients"
+            value={formData.ingredients}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+            rows={5}
+            placeholder="e.g. 2 eggs\n1 cup flour\n1/2 cup sugar"
+          />
         </div>
 
         {/* Instructions */}
@@ -96,6 +133,23 @@ export default function EditRecipePage(){
         <div>
           <label className="block font-bold mb-2">Cooking Time (mins)</label>
           <input name="cookingTime" type="number" value={formData.cookingTime} onChange={handleChange} className="w-full p-2 border rounded" required />
+        </div>
+
+        {/* Image upload */}
+        <div>
+          <label className="block font-bold mb-2">Recipe Image</label>
+          {formData.image && (
+            <img src={formData.image} alt="current image" className="w-full h-48 object-cover rounded-lg mt-2" />
+          )}
+          <input
+          type='file'
+          name='image'
+          accept='image/*'
+          onChange={handleImageUpload}
+          className='w-full p-2 border rounded'
+          required
+          />
+          {uploading && <p className='text-sm text-gray-500'>Uploading image...</p>}
         </div>
 
         <button type="submit" className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600">

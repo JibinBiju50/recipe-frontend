@@ -1,8 +1,7 @@
-
 const API_URL = "https://recipe-backend-xdi5.onrender.com/api/recipes";
 
 //function to search and get the recipes
-export const SearchRecipies = async (query) => {
+export const searchRecipes = async (query) => {
   const url = query ? `${API_URL}?title=${encodeURIComponent(query)}` : API_URL;
   console.log("Fetching recipes from:", url);
 
@@ -43,6 +42,7 @@ export const getRecipeDetails = async (id) => {
 }
 
 //function to create and save recipe
+
 
 export const createRecipe = async (recipeData) => {
   const url = API_URL; 
