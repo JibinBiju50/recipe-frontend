@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createRecipe } from '../service/recipeAPI';
 import toast from 'react-hot-toast';
@@ -16,7 +16,9 @@ function AddRecipePage() {
   });
   const [uploading, setUploading] = useState(false);
 
- 
+  useEffect(()=>{
+    document.title = "Add Recipe - Spoonfull";
+  }, []);
   //function to handle image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];

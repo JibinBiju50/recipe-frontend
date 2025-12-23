@@ -13,6 +13,11 @@ export default function RecipePage() {
     const [error, setError] = useState(null);
     
     useEffect(()=>{
+        if(recipe){
+            document.title = `${recipe.title} - Spoonfull`;
+        } else {
+            document.title = "Recipe - Spoonfull";
+        }
         const fetchDetails = async () =>{
             setloading(true);
             setError(null);
@@ -45,7 +50,7 @@ export default function RecipePage() {
           <h1 className="text-4xl font-bold text-gray-800 mb-4 md:mb-0">{recipe.title}</h1>
           <Link 
             to={`/edit-recipe/${recipe._id}`} 
-            className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 transition shadow-md font-semibold"
+            className="bg-[var(--color-primary)] text-white px-6 py-2 rounded-lg hover:bg-[var(--color-accent)] transition shadow-md font-semibold"
           >
             ✎ Edit Recipe
           </Link>
@@ -91,8 +96,8 @@ export default function RecipePage() {
         </div>
         
         {/* Back Button */}
-        <div className="mt-8 text-center">
-            <Link to="/" className="text-blue-500 hover:underline">
+        <div className="mt-8 mb-8 text-center">
+            <Link to="/" className="text-[var(--color-font)] hover:underline">
                 &larr; Back to all recipes
             </Link>
         </div>

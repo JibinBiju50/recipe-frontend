@@ -40,7 +40,7 @@ export default function RecipeCard({ recipe, onDelete }) {
       )}
       <button
         onClick={handleDeleteClick}
-        className='absolute top-2 right-2 bg-red-500 text-black p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10'
+        className='absolute top-2 right-2 bg-red-500 text-black p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer'
         title='Delete Recipe'>
         <FontAwesomeIcon icon={faTrashCan} />
       </button>

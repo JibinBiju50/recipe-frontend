@@ -7,10 +7,10 @@ import { searchRecipes, deleteRecipe } from "../service/recipeAPI";
 import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { faFacebook, faInstagram, faTwitter, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import heroImage from '../assets/burger-image.png';
 import aboutBgImage from '../assets/About bg image.jpg';
-import logo from '../assets/logo.png';
+import NewsletterSection from '../components/NewsletterSection';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
     //state to hold recipes
@@ -44,6 +44,7 @@ export default function HomePage() {
 
     // Fetch recent recipes on mount
     useEffect(() => {
+        document.title = "Spoonfull - Discover Delicious Recipes";
         async function fetchRecent() {
             setLoading(true);
             setError(null);
@@ -82,7 +83,7 @@ export default function HomePage() {
                 {/* Left: Heading, paragraph, link */}
                 <div className="flex-1 flex flex-col items-start text-left">
                     <h1 className="text-4xl md:text-6xl font-bold mb-4 text-[var(--color-primary)]">Cooking Made Fun and Easy: Unleash Your Inner Chef</h1>
-                    <p className="text-lg mb-6">Discover more than 10,000 recipes in your hand with the best recipe. Help you to find the easiest way to cook.</p>
+                    <p className="text-lg mb-6">Discover delicious recipes from around the world. Share your favorite dishes and explore new flavors with our community of food lovers.</p>
                     <div className="flex flex-row gap-4 mb-4">
                       <a 
                           href="#recipe-list" 
@@ -112,6 +113,7 @@ export default function HomePage() {
                     <div className="bg-[var(--color-accent)] rounded-xl px-4 py-2 shadow text-[var(--color-font)] font-medium text-md md:text-lg min-w-[150px] flex items-center justify-center">Chicken Biriyani</div>
                     <div className="bg-[var(--color-accent)] rounded-xl px-4 py-2 shadow text-[var(--color-font)] font-medium text-md md:text-lg min-w-[150px] flex items-center justify-center">Egg Roast</div>
                     <div className="bg-[var(--color-accent)] rounded-xl px-4 py-2 shadow text-[var(--color-font)] font-medium text-md md:text-lg min-w-[150px] flex items-center justify-center">Masala Dosa</div>
+                    <div className="text-[var(--color-font)] font-light text-md md:text-lg min-w-[150px] flex items-center justify-center">and more...</div>
                 </div>
             </div>
             {/* Discover, Create, Share section with search bar and recipe cards */}
@@ -184,123 +186,13 @@ export default function HomePage() {
 
         </main>
 
-            {/* Footer with Newsletter */}
-            <footer className="w-full mt-16">
-                {/* Newsletter Section */}
-                <div className="w-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] px-6 md:px-12 py-12 md:py-16 relative overflow-hidden">
-                    {/* Decorative elements */}
-                    <div className="absolute top-4 left-4 text-4xl opacity-20">🍕</div>
-                    <div className="absolute bottom-4 right-4 text-4xl opacity-20">🍔</div>
-                    <div className="absolute top-1/2 left-8 text-3xl opacity-15 hidden md:block">🥗</div>
-                    <div className="absolute top-8 right-12 text-3xl opacity-15 hidden md:block">🍰</div>
-                    
-                    <div className="relative flex flex-col items-center text-center max-w-7xl mx-auto">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                            Get Fresh Recipes Weekly! 🍳
-                        </h2>
-                        <p className="text-white/90 text-lg max-w-xl mb-8">
-                            Subscribe to our newsletter and receive delicious recipes, cooking tips, and exclusive content straight to your inbox.
-                        </p>
-                        
-                        {/* Email form */}
-                        <form className="flex flex-col sm:flex-row gap-4 w-full max-w-lg" onSubmit={(e) => e.preventDefault()}>
-                            <input 
-                                type="email" 
-                                placeholder="Enter your email address"
-                                className="flex-1 px-6 py-4 rounded-full text-[var(--color-font)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white shadow-lg"
-                                required
-                            />
-                            <button 
-                                type="submit"
-                                className="bg-white text-[var(--color-accent)] px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:bg-[var(--color-font)] hover:text-white shadow-lg hover:shadow-xl"
-                            >
-                                Subscribe
-                            </button>
-                        </form>
-                        
-                        <p className="text-white/70 text-sm mt-4">
-                            🔒 No spam, unsubscribe anytime. Join 10,000+ food lovers!
-                        </p>
-                    </div>
-                </div>
+        {/* Newsletter Section - Only on HomePage */}
+        <div className="w-full mt-16">
+            <NewsletterSection />
+        </div>
 
-                {/* Footer Content */}
-                <div className="w-full bg-[var(--color-font)] text-white px-6 md:px-12 py-12">
-                    <div className="max-w-7xl mx-auto">
-                        {/* Footer Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                            
-                            {/* Brand Section */}
-                            <div className="md:col-span-1">
-                            <div>
-          <img src={logo} alt="Logo" className="w-20 h-12" />
-      </div>
-                                <p className="text-gray-400 text-sm leading-relaxed">
-                                    Discover delicious recipes from around the world. Cook, share, and enjoy amazing meals with your loved ones.
-                                </p>
-                            </div>
-
-                            {/* Quick Links */}
-                            <div>
-                                <h4 className="text-lg font-semibold mb-4 text-[var(--color-primary)]">Quick Links</h4>
-                                <ul className="space-y-2">
-                                    <li><a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Home</a></li>
-                                    <li><a href="#recipe-list" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Recipes</a></li>
-                                    <li><a href="#about" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">About Us</a></li>
-                                    <li><Link to="/add-recipe" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Add Recipe</Link></li>
-                                </ul>
-                            </div>
-
-                            {/* Categories */}
-                            <div>
-                                <h4 className="text-lg font-semibold mb-4 text-[var(--color-primary)]">Categories</h4>
-                                <ul className="space-y-2">
-                                    <li><a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Breakfast</a></li>
-                                    <li><a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Lunch</a></li>
-                                    <li><a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Dinner</a></li>
-                                    <li><a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Desserts</a></li>
-                                </ul>
-                            </div>
-
-                            {/* Connect */}
-                            <div>
-                                <h4 className="text-lg font-semibold mb-4 text-[var(--color-primary)]">Connect With Us</h4>
-                                <div className="flex gap-4 mb-4">
-                                    <a href="#" className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center hover:bg-[var(--color-accent)] transition-colors">
-                                        <FontAwesomeIcon icon={faFacebook} className="text-white text-lg" />
-                                    </a>
-                                    <a href="#" className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center hover:bg-[var(--color-accent)] transition-colors">
-                                        <FontAwesomeIcon icon={faInstagram} className="text-white text-lg" />
-                                    </a>
-                                    <a href="#" className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center hover:bg-[var(--color-accent)] transition-colors">
-                                        <FontAwesomeIcon icon={faTwitter} className="text-white text-lg" />
-                                    </a>
-                                    <a href="#" className="w-10 h-10 bg-[var(--color-primary)] rounded-full flex items-center justify-center hover:bg-[var(--color-accent)] transition-colors">
-                                        <FontAwesomeIcon icon={faYoutube} className="text-white text-lg" />
-                                    </a>
-                                </div>
-                                <p className="text-gray-400 text-sm">
-                                    Follow us for daily recipes and cooking inspiration!
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="border-t border-gray-700 pt-8">
-                            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                                <p className="text-gray-400 text-sm">
-                                    © 2025 Spoonfull. All rights reserved.
-                                </p>
-                                <div className="flex gap-6 text-sm">
-                                    <a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Privacy Policy</a>
-                                    <a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Terms of Service</a>
-                                    <a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Contact</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+        {/* Footer - Common to all pages */}
+        <Footer />
         </>
     );
 }

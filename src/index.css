@@ -1,6 +1,6 @@
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', system-ui, sans-serif;
 
   --color-bg: #FFF7F0;
   --color-primary: #FFB085;
@@ -21,5 +21,9 @@ body {
   min-width: 320px;
   background-color: var(--color-bg);
   color: var(--color-font);
+}
+
+input[type="file"] {
+  font-weight: 300;
 }
 

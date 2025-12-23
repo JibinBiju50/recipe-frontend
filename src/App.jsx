@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import RecipePage from './pages/RecipePage';
 import AddRecipePage from './pages/AddRecipePage';
@@ -9,19 +10,19 @@ import "./App.css";
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />,
+    element: <HomePage />, // HomePage has its own Navbar, NewsletterSection, and Footer
   },
   {
     path: '/recipe/:recipeId',
-    element: <RecipePage />,
+    element: <Layout><RecipePage /></Layout>,
   },
   {
     path: '/add-recipe',
-    element: <AddRecipePage />,
+    element: <Layout><AddRecipePage /></Layout>,
   },
   {
     path: '/edit-recipe/:recipeId',
-    element: <EditRecipePage />,
+    element: <Layout><EditRecipePage /></Layout>,
   },
 ]);
 
