@@ -1,4 +1,4 @@
-# 🍳 Spoonfull - Recipe Management Application
+# 🍳 Spoonfull - Recipe Management Application (Frontend)
 
 A modern, full-featured recipe management web application built with React and Vite.  Discover, create, edit, and update delicious recipes with an intuitive and responsive user interface.
 
