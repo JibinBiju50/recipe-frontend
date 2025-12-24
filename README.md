@@ -7,9 +7,6 @@ A modern, full-featured recipe management web application built with React and V
 Frontend:
 🔗 [https://spoonfullrecipes.netlify.app/]
 
-Backend API:
-🔗 [https://recipe-backend-xdi5.onrender.com/api/recipes]
-
 ## ✨ Features
 
 - View all recipes
@@ -74,6 +71,7 @@ This frontend connects to a backend API.  Make sure to configure the `API_BASE` 
    ```javascript
    export const API_BASE = 'your-api-base-url';
    ```
+   **Note:** Replace `'your-api-base-url'` with your actual backend API URL (e.g., `http://localhost:5000` for local development).
 
 4. **Start the development server**
    ```bash
