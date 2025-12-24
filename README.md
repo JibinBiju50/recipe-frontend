@@ -12,14 +12,12 @@ Backend API:
 
 ## ✨ Features
 
-- 🔍 **Smart Search** - Search recipes with real-time autocomplete suggestions
-- 📝 **Recipe Management** - Create, edit, and delete recipes with ease
-- 🖼️ **Image Upload** - Upload recipe images with Cloudinary integration
-- 📱 **Responsive Design** - Fully responsive UI built with Tailwind CSS
-- 🍔 **Recipe Cards** - Beautiful card-based layout for browsing recipes
-- ⏱️ **Cooking Time** - Track preparation and cooking times
-- 📧 **Newsletter Section** - Subscribe to weekly recipe updates
-- 🔗 **Routing** - Client-side routing with React Router DOM
+- View all recipes
+- View individual recipe details
+- Create new recipes
+- Edit existing recipes
+- Upload recipe images (via backend integration)
+- Fully Responsive Ui
 
 ## 🛠️ Tech Stack
 
