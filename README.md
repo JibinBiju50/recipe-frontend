@@ -8,10 +8,10 @@ This project is designed as a pure client application with no business logic or 
 
 ## 🌐 Live Application
 
-Frontend:
-🔗 https://your-frontend-url.com
+Frontend:  
+🔗 https://spoonfullrecipes.netlify.app/
 
-Backend API:
+Backend API:  
 🔗 https://your-backend-api.com/api/v1
 
 ---
@@ -83,23 +83,27 @@ Create a `.env` file in the project root:
 
 ```env
 VITE_API_BASE_URL=https://your-backend-api.com/api/v1
+```
 
 The same codebase can be used across environments by changing this value.
 
 A reference file .env.example is included in the repository.
 
-##🚀 Local Setup
-###Prerequisites
+## 🚀 Local Setup
+
+### Prerequisites
 
 - Node.js (v16 or higher)
 - npm
 
-###Steps
+### Steps
+
+```bash
 git clone https://github.com/JibinBiju50/recipe-frontend.git
 cd recipe-frontend
 npm install
 npm run dev
-
+```
 
 The application will be available at:
 
@@ -129,7 +133,5 @@ recipe-frontend/
 
 ## 👤 Author
 
-Jibin Biju
+Jibin Biju  
 GitHub: https://github.com/JibinBiju50
-
-
