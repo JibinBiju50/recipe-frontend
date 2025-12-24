@@ -1,4 +1,5 @@
-const API_URL = "https://recipe-backend-xdi5.onrender.com/api/recipes";
+import { API_BASE } from '../config';
+const API_URL = `${API_BASE}/api/v1/recipes`;
 
 //function to search and get the recipes
 export const searchRecipes = async (query) => {
