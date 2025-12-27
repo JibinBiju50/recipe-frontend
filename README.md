@@ -12,19 +12,16 @@ Frontend:
 🔗 https://spoonfullrecipes.netlify.app/
 
 Backend API:  
-🔗 https://your-backend-api.com/api/v1
+🔗 https://recipe-backend-xdi5.onrender.com/api/v1/recipes
 
 ---
 
-## 🎯 Project Purpose
+## Features
 
-This project was built to gain hands-on experience with:
-- API-driven frontend architecture
-- Client–server communication using REST APIs
-- CRUD workflows in a real-world application
-- Building scalable frontend structure ready for authentication and authorization
-
-The frontend is fully decoupled from the backend and communicates only via HTTP requests.
+- List recipes
+- View recipe details
+- Create, update, and delete recipes
+- Title-based recipe search via query parameter
 
 ---
 
@@ -35,32 +32,11 @@ The frontend is fully decoupled from the backend and communicates only via HTTP 
 - Vite
 - JavaScript (ES6+)
 - React Router DOM
-- Axios
 
 ### Styling
 - Tailwind CSS
 - PostCSS
 - Autoprefixer
-
----
-
-## ✨ Features
-
-- View all recipes
-- View individual recipe details
-- Create new recipes
-- Edit existing recipes
-- Delete recipes
-- Responsive UI for mobile, tablet and desktop.
-
----
-
-## 🧩 Architecture Overview
-
-- This application acts as a client-only frontend.
-- All data operations are performed through REST API calls.
-- No database logic exists on the frontend.
-- The backend is treated as an independent service.
 
 ---
 
@@ -84,8 +60,9 @@ Create a `.env` file in the project root:
 ```env
 VITE_API_BASE_URL=https://your-backend-api.com/api/v1
 ```
+Base URL example:
 
-The same codebase can be used across environments by changing this value.
+- `http://localhost:5000/api/v1`
 
 A reference file .env.example is included in the repository.
 
@@ -103,32 +80,6 @@ git clone https://github.com/JibinBiju50/recipe-frontend.git
 cd recipe-frontend
 npm install
 npm run dev
-```
-
-The application will be available at:
-
-http://localhost:5173
-
-## 📂 Project Structure
-
-```
-recipe-frontend/
-├── public/                 # Static assets
-├── src/                    # Source code
-│   ├── assets/             # Images and static files
-│   ├── components/         # Reusable React components
-│   ├── pages/              # Page-level React components
-│   ├── services/           # API calls and external services
-│   ├── styles/             # Global and component styles
-│   ├── config.js           # App configuration (API base URL, etc.)
-│   ├── App.jsx             # Main app component
-│   └── main.jsx            # Entry point
-├── .env.example            # Example env file for setup
-├── index.html              # HTML template
-├── package.json            # Project metadata and scripts
-├── tailwind.config.js      # Tailwind CSS configuration
-├── postcss.config.js       # PostCSS configuration
-└── README.md               # Project documentation
 ```
 
 ## 👤 Author
