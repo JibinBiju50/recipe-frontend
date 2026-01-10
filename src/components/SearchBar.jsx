@@ -13,8 +13,8 @@ export default function SearchBar({ onSearch }) {
     useEffect(() => {
         async function fetchAll() {
             try {
-                const data = await searchRecipes("");
-                setAllRecipes(data.map(r => r.title));
+                const data = await searchRecipes("", 1, 100); // Fetch more recipes for suggestions
+                setAllRecipes(data.recipes.map(r => r.title));
             } catch (e) {
                 setAllRecipes([]);
             }

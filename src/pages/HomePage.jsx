@@ -23,21 +23,57 @@ export default function HomePage() {
     const [hasSearched, setHasSearched] = useState(false);
     //state for initial recent recipes
     const [recentRecipes, setRecentRecipes] = useState([]);
+    //state for pagination
+    const [pagination, setPagination] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    
     //function to handle the search
-    const handleSearch = async (searchItem) =>{
+    const handleSearch = async (searchItem, page = 1) =>{
         setLoading(true);
         setError(null);
         setRecipes([]); //clear old recipes
         setHasSearched(true);
+        setSearchQuery(searchItem);
+        setCurrentPage(page);
         try{
             //call the API
-            const apiResults = await searchRecipes(searchItem);
+            const apiResults = await searchRecipes(searchItem, page, 8);
             //update the state with our results
-            setRecipes(apiResults);
+            setRecipes(apiResults.recipes);
+            setPagination(apiResults.pagination);
         } catch(error){
             console.log("Failed to search for recipes!", error);
             setError("Could not fetch recipes! Please try again later..");
         } finally{
+            setLoading(false);
+        }
+    }
+
+    //function to handle page change
+    const handlePageChange = (newPage) => {
+        if (hasSearched) {
+            handleSearch(searchQuery, newPage);
+        } else {
+            // Handle pagination for recent recipes (no search)
+            fetchRecentPage(newPage);
+        }
+        //scroll to recipe list
+        document.getElementById('recipe-list')?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    //function to fetch a specific page of recent recipes
+    const fetchRecentPage = async (page) => {
+        setLoading(true);
+        setError(null);
+        setCurrentPage(page);
+        try {
+            const apiResults = await searchRecipes("", page, 8);
+            setRecentRecipes(apiResults.recipes);
+            setPagination(apiResults.pagination);
+        } catch (error) {
+            setError("Could not fetch recipes! Please try again later..");
+        } finally {
             setLoading(false);
         }
     }
@@ -49,8 +85,9 @@ export default function HomePage() {
             setLoading(true);
             setError(null);
             try {
-                const apiResults = await searchRecipes(""); // fetch all or recent
-                setRecentRecipes(apiResults.slice(0, 8));
+                const apiResults = await searchRecipes("", 1, 8); // fetch first page
+                setRecentRecipes(apiResults.recipes);
+                setPagination(apiResults.pagination);
             } catch (error) {
                 setError("Could not fetch recipes! Please try again later..");
             } finally {
@@ -117,7 +154,7 @@ export default function HomePage() {
                 </div>
             </div>
             {/* Discover, Create, Share section with search bar and recipe cards */}
-            <section id="recipe-list" className="w-full max-w-7xl mx-auto mb-12 mt-12">
+            <section id="recipe-list" className="w-full max-w-7xl mx-auto mb-16 mt-12">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                     <div className="text-left">
                         <h1 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)] mb-1">Discover Recipes</h1>
@@ -133,15 +170,49 @@ export default function HomePage() {
                 {error && (
                     <p className="text-center text-red-600">{error}</p>
                 )}
-                {/* Show up to 6 most recent recipes as cards */}
+                {/* Show up to 8 most recent recipes as cards */}
                 <div className="flex flex-wrap justify-center gap-8 w-full">
-                    {!loading && !error && (hasSearched ? recipes.slice(0, 8).map(recipe => (
+                    {!loading && !error && (hasSearched ? recipes.map(recipe => (
                         <RecipeCard key={recipe._id} recipe={recipe} onDelete={handleDelete} />
                     )) : recentRecipes.map(recipe => (
                         <RecipeCard key={recipe._id} recipe={recipe} onDelete={handleDelete} />
                         ))
                     )}
                 </div>
+                
+                {/* Pagination Controls */}
+                {!loading && !error && pagination && pagination.totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-4 mt-8">
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={!pagination.hasPrevPage}
+                            className={`px-4 py-2 rounded font-semibold transition-colors duration-200 ${
+                                pagination.hasPrevPage 
+                                    ? 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-accent)]' 
+                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                        >
+                            Previous
+                        </button>
+                        
+                        <span className="text-[var(--color-font)] font-medium">
+                            Page {pagination.currentPage} of {pagination.totalPages}
+                        </span>
+                        
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={!pagination.hasNextPage}
+                            className={`px-4 py-2 rounded font-semibold transition-colors duration-200 ${
+                                pagination.hasNextPage 
+                                    ? 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-accent)]' 
+                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                        >
+                            Next
+                        </button>
+                    </div>
+                )}
+                
                 {/* No recipes found message */}
                 {!loading && !error && hasSearched && recipes.length === 0 &&  (
                     <p className="text-center text-gray-500 mt-8">No recipes found. Try a different search!</p>
@@ -151,7 +222,7 @@ export default function HomePage() {
             {/* About section - Full width background */}
             <section 
                 id="about" 
-                className="relative w-screen left-1/2 -translate-x-1/2 mb-12 mt-16 min-h-[500px] md:min-h-[550px] bg-cover bg-center bg-no-repeat"
+                className="relative w-screen left-1/2 -translate-x-1/2 mt-16 min-h-[500px] md:min-h-[550px] bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: `url(${aboutBgImage})` }}
             >
                 {/* Dark overlay for better readability */}
@@ -187,7 +258,7 @@ export default function HomePage() {
         </main>
 
         {/* Newsletter Section - Only on HomePage */}
-        <div className="w-full mt-16">
+        <div className="w-full">
             <NewsletterSection />
         </div>
 

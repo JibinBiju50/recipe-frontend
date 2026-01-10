@@ -1,9 +1,15 @@
 import { API_BASE } from '../config';
 const API_URL = `${API_BASE}/api/v1/recipes`;
 
-//function to search and get the recipes
-export const searchRecipes = async (query) => {
-  const url = query ? `${API_URL}?title=${encodeURIComponent(query)}` : API_URL;
+//function to search and get the recipes with pagination
+export const searchRecipes = async (query, page = 1, limit = 8) => {
+  const params = new URLSearchParams();
+  
+  if (query) params.append('title', query);
+  params.append('page', page);
+  params.append('limit', limit);
+  
+  const url = `${API_URL}?${params.toString()}`;
   console.log("Fetching recipes from:", url);
 
   try {
@@ -21,7 +27,7 @@ export const searchRecipes = async (query) => {
   }
 }
 
-//function to get all recipes
+//function to get recipe details
 export const getRecipeDetails = async (id) => {
   const url = `${API_URL}/${id}`
   console.log("fetching details from ", url);
@@ -43,8 +49,6 @@ export const getRecipeDetails = async (id) => {
 }
 
 //function to create and save recipe
-
-
 export const createRecipe = async (recipeData) => {
   const url = API_URL; 
 
