@@ -1,18 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
-import { searchRecipes, deleteRecipe } from "../service/recipeAPI";
-import toast from "react-hot-toast";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { searchRecipes } from "../service/recipeAPI";
 import heroImage from '../assets/burger-image.png';
 import aboutBgImage from '../assets/About bg image.jpg';
 import NewsletterSection from '../components/NewsletterSection';
 import Footer from '../components/Footer';
 
 export default function HomePage() {
+    const location = useLocation();
     //state to hold recipes
     const [recipes, setRecipes] = useState([]);
     //state for loading
@@ -72,7 +70,7 @@ export default function HomePage() {
             setRecentRecipes(apiResults.recipes);
             setPagination(apiResults.pagination);
         } catch (error) {
-            setError("Could not fetch recipes! Please try again later..");
+            setError("Could not fetch recipes! Please try again later..", error);
         } finally {
             setLoading(false);
         }
@@ -85,31 +83,31 @@ export default function HomePage() {
             setLoading(true);
             setError(null);
             try {
-                const apiResults = await searchRecipes("", 1, 8); // fetch first page
+                const apiResults = await searchRecipes("", 1, 8); 
                 setRecentRecipes(apiResults.recipes);
                 setPagination(apiResults.pagination);
             } catch (error) {
-                setError("Could not fetch recipes! Please try again later..");
+                setError("Could not fetch recipes! Please try again later..", error.message);
             } finally {
                 setLoading(false);
             }
         }
         fetchRecent();
     }, []);
-    //function to handle Deletion
-    const handleDelete = async (id) => {
-        try {
-            await deleteRecipe(id);
-            // Update both states depending on which is shown
-            setRecipes(prevRecipes => prevRecipes.filter(r => r._id !== id));
-            setRecentRecipes(prevRecent => prevRecent.filter(r => r._id !== id));
-            toast.success('Recipe deleted', {
-                icon: <FontAwesomeIcon icon={faTrashCan} className="text-red-500" />
-            });
-        } catch (error) {
-            toast.error("Failed to delete the recipe");
+
+    useEffect(() => {
+        if (!location.hash) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
         }
-    }
+
+        const timeout = setTimeout(() => {
+            document.querySelector(location.hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 0);
+
+        return () => clearTimeout(timeout);
+    }, [location.hash]);
+    
     // Add padding top to prevent content being hidden behind navbar
     return (
         <>
@@ -153,8 +151,8 @@ export default function HomePage() {
                     <div className="text-[var(--color-font)] font-light text-md md:text-lg min-w-[150px] flex items-center justify-center">and more...</div>
                 </div>
             </div>
-            {/* Discover, Create, Share section with search bar and recipe cards */}
-            <section id="recipe-list" className="w-full max-w-7xl mx-auto mb-16 mt-12">
+            {/* Discover recipe section with search bar and recipe cards */}
+            <section id="recipe-list" className="w-full max-w-7xl mx-auto mb-16 mt-12 scroll-mt-24">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                     <div className="text-left">
                         <h1 className="text-3xl md:text-4xl font-bold text-[var(--color-primary)] mb-1">Discover Recipes</h1>
@@ -173,9 +171,9 @@ export default function HomePage() {
                 {/* Show up to 8 most recent recipes as cards */}
                 <div className="flex flex-wrap justify-center gap-8 w-full">
                     {!loading && !error && (hasSearched ? recipes.map(recipe => (
-                        <RecipeCard key={recipe._id} recipe={recipe} onDelete={handleDelete} />
+                        <RecipeCard key={recipe._id} recipe={recipe} />
                     )) : recentRecipes.map(recipe => (
-                        <RecipeCard key={recipe._id} recipe={recipe} onDelete={handleDelete} />
+                        <RecipeCard key={recipe._id} recipe={recipe} />
                         ))
                     )}
                 </div>
@@ -222,7 +220,7 @@ export default function HomePage() {
             {/* About section - Full width background */}
             <section 
                 id="about" 
-                className="relative w-screen left-1/2 -translate-x-1/2 mt-16 min-h-[500px] md:min-h-[550px] bg-cover bg-center bg-no-repeat"
+                className="relative w-screen left-1/2 -translate-x-1/2 mt-16 min-h-[500px] md:min-h-[550px] bg-cover bg-center bg-no-repeat scroll-mt-24"
                 style={{ backgroundImage: `url(${aboutBgImage})` }}
             >
                 {/* Dark overlay for better readability */}

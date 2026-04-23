@@ -1,4 +1,4 @@
-import {React, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { searchRecipes } from "../service/recipeAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
@@ -15,7 +15,7 @@ export default function SearchBar({ onSearch }) {
             try {
                 const data = await searchRecipes("", 1, 100); // Fetch more recipes for suggestions
                 setAllRecipes(data.recipes.map(r => r.title));
-            } catch (e) {
+            } catch {
                 setAllRecipes([]);
             }
         }

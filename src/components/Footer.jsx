@@ -26,9 +26,9 @@ export default function Footer() {
             <div>
               <h4 className="text-lg font-semibold mb-4 text-[var(--color-primary)]">Quick Links</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Home</a></li>
-                <li><a href="#recipe-list" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Recipes</a></li>
-                <li><a href="#about" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">About Us</a></li>
+                <li><Link to="/" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Home</Link></li>
+                <li><Link to="/#recipe-list" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Recipes</Link></li>
+                <li><Link to="/#about" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">About Us</Link></li>
                 <li><Link to="/add-recipe" className="text-gray-400 hover:text-[var(--color-accent)] transition-colors">Add Recipe</Link></li>
               </ul>
             </div>

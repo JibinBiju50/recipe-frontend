@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
-import {getRecipeDetails, updateRecipe} from '../service/recipeAPI'
+import {getRecipeDetails, updateRecipe, uploadRecipeImage} from '../service/recipeAPI'
 import toast from 'react-hot-toast';
-import { API_BASE } from '../config';
+import { getCurrentUser } from '../service/authAPI';
 
 export default function EditRecipePage(){
     const {recipeId} = useParams();
@@ -19,16 +19,28 @@ export default function EditRecipePage(){
 
     const [loading, setLoading] = useState(true)
     const [uploading, setUploading] = useState(false);
+
     //Fetch the existing data when page loads
     useEffect(()=>{
-      if(formData.title){
-        document.title = `Edit ${formData.title} - Spoonfull`;
-      } else {
-        document.title = "Edit Recipe - Spoonfull";
-      }
+      document.title = "Edit Recipe - Spoonfull";
        const fetchData = async ()=>{
         try{
+            const user = await getCurrentUser();
+            if (!user) {
+              toast('Please login to edit a recipe', {
+                icon: '',
+                style: { background: '#fff3cd', color: '#856404', border: '1px solid #ffeeba' },
+              });
+              navigate('/login', { replace: true });
+              return;
+            }
+
             const data = await getRecipeDetails(recipeId)
+            if (data.user && data.user !== user._id) {
+              toast.error('You can only edit your own recipes');
+              navigate(`/recipe/${recipeId}`, { replace: true });
+              return;
+            }
 
             //pre-fill the form with existing data
             setFormData({
@@ -38,14 +50,15 @@ export default function EditRecipePage(){
               cookingTime: data.cookingTime,
               image: data.image || ''
             })
-        } catch(error){
+            document.title = `Edit ${data.title} - Spoonfull`;
+        } catch{
             alert("Failed to load existing recipe")
         } finally {
             setLoading(false)
         }
     }
     fetchData();
-    }, [recipeId])
+    }, [recipeId, navigate])
 
     //Handle Input changes
     const handleChange = (e) => {
@@ -63,11 +76,7 @@ export default function EditRecipePage(){
       uploadData.append('image', file);
 
       try{
-        const response = await fetch(`${API_BASE}/api/upload`, {
-          method: 'POST',
-          body: uploadData
-        })
-        const data = await response.json();
+        const data = await uploadRecipeImage(uploadData);
         setFormData(prev => ({...prev, image: data.imageUrl}));
       } catch(error){
         console.error('Error uploading image:', error);
@@ -96,39 +105,52 @@ export default function EditRecipePage(){
           await updateRecipe(recipeId, formattedData);
           toast.success('Recipe Updated Successfully!');
           navigate(`/recipe/${recipeId}`); 
-        } catch (error) {
+        } catch {
           toast.error('Failed to update recipe');
         }
     };
 
     if (loading) return <p className="text-center mt-10">Loading...</p>;
 
+    // Breadcrumb
+    const breadcrumb = (
+      <nav className="text-sm mb-4" aria-label="Breadcrumb">
+        <ol className="list-reset flex text-gray-500">
+          <li><a href="/" className="hover:underline text-(--color-primary)">Home</a></li>
+          <li><span className="mx-2">&gt;</span></li>
+          <li><a href={`/recipe/${recipeId}`} className="hover:underline text-(--color-primary)">Recipe</a></li>
+          <li><span className="mx-2">&gt;</span></li>
+          <li className="text-gray-700 font-semibold">Edit</li>
+        </ol>
+      </nav>
+    );
+
     return(
       <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center text-[var(--color-primary)]">Edit Recipe</h1>
-      
-      <form onSubmit={handleSubmit} className="bg-[var(--color-bg)] p-6 rounded-xl shadow-lg space-y-6 border border-[var(--color-accent)]">
+        {breadcrumb}
+        <h1 className="text-3xl font-bold mb-6 text-center text-(--color-primary)">Edit Recipe</h1>
+        <form onSubmit={handleSubmit} className="bg-(--color-bg) p-6 rounded-xl shadow-lg space-y-6 border border-(--color-accent)">
         {/* Title */}
         <div>
-          <label className="block text-[var(--color-primary)] font-semibold mb-2">Title</label>
+          <label className="block text-(--color-primary) font-semibold mb-2">Title</label>
           <input 
             name="title" 
             value={formData.title} 
             onChange={handleChange} 
-            className="w-full p-3 border-2 border-[var(--color-accent)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] bg-white text-[var(--color-font)] placeholder-gray-400"
+            className="w-full p-3 border-2 border-(--color-accent) rounded-lg focus:outline-none focus:border-(--color-primary) bg-white text-(--color-font) placeholder-gray-400"
             placeholder="e.g. Spicy Tacos"
-            required 
+            required
           />
         </div>
 
         {/* Ingredients */}
         <div>
-          <label className="block text-[var(--color-primary)] font-semibold mb-2">Ingredients (one per line)</label>
+          <label className="block text-(--color-primary) font-semibold mb-2">Ingredients (one per line)</label>
           <textarea
             name="ingredients"
             value={formData.ingredients}
             onChange={handleChange}
-            className="w-full p-3 border-2 border-[var(--color-accent)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] bg-white text-[var(--color-font)] placeholder-gray-400"
+            className="w-full p-3 border-2 border-(--color-accent) rounded-lg focus:outline-none focus:border-(--color-primary) bg-white text-(--color-font) placeholder-gray-400"
             required
             rows={5}
             placeholder="e.g. 2 eggs\n1 cup flour\n1/2 cup sugar"
@@ -137,12 +159,12 @@ export default function EditRecipePage(){
 
         {/* Instructions */}
         <div>
-          <label className="block text-[var(--color-primary)] font-semibold mb-2">Instructions</label>
+          <label className="block text-(--color-primary) font-semibold mb-2">Instructions</label>
           <textarea 
             name="instructions" 
             value={formData.instructions} 
             onChange={handleChange} 
-            className="w-full p-3 border-2 border-[var(--color-accent)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] bg-white text-[var(--color-font)] placeholder-gray-400"
+            className="w-full p-3 border-2 border-(--color-accent) rounded-lg focus:outline-none focus:border-(--color-primary) bg-white text-(--color-font) placeholder-gray-400"
             placeholder="1..."
             rows={8}
             required 
@@ -151,20 +173,20 @@ export default function EditRecipePage(){
 
         {/* Cooking Time */}
         <div>
-          <label className="block text-[var(--color-primary)] font-semibold mb-2">Cooking Time (minutes)</label>
+          <label className="block text-(--color-primary) font-semibold mb-2">Cooking Time (minutes)</label>
           <input 
             name="cookingTime" 
             type="number" 
             value={formData.cookingTime} 
             onChange={handleChange} 
-            className="w-full p-3 border-2 border-[var(--color-accent)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] bg-white text-[var(--color-font)] placeholder-gray-400"
+            className="w-full p-3 border-2 border-(--color-accent) rounded-lg focus:outline-none focus:border-(--color-primary) bg-white text-(--color-font) placeholder-gray-400"
             required 
           />
         </div>
 
         {/* Image upload */}
         <div>
-          <label className="block text-[var(--color-primary)] font-semibold mb-2">Recipe Image</label>
+          <label className="block text-(--color-primary) font-semibold mb-2">Recipe Image</label>
           {formData.image && (
             <img src={formData.image} alt="current image" className="w-full h-48 object-cover rounded-lg mb-2" />
           )}
@@ -173,15 +195,14 @@ export default function EditRecipePage(){
             name="image"
             accept="image/*"
             onChange={handleImageUpload}
-            className="w-full p-3 border-2 border-[var(--color-accent)] rounded-lg focus:outline-none focus:border-[var(--color-primary)] bg-white text-[var(--color-font)] placeholder-gray-400"
-            required
+            className="w-full p-3 border-2 border-(--color-accent) rounded-lg focus:outline-none focus:border-(--color-primary) bg-white text-(--color-font) placeholder-gray-400"
           />
           {uploading && <p className="text-sm text-gray-500 mt-2">Uploading image...</p>}
         </div>
 
         <button 
           type="submit" 
-          className="w-full bg-[var(--color-primary)] text-white font-bold py-3 px-4 rounded-lg hover:bg-[var(--color-accent)] hover:!text-white transition-colors duration-200 shadow"
+          className="w-full bg-(--color-primary) text-white font-bold py-3 px-4 rounded-lg hover:bg-(--color-accent) hover:text-white! transition-colors duration-200 shadow"
         >
           Update Recipe
         </button>
