@@ -1,7 +1,10 @@
-// Use VITE_API_BASE from .env (set in Vite)
-export const API_BASE = import.meta.env.VITE_API_BASE || '';
+const envApiBase = import.meta.env.VITE_API_BASE?.trim();
 
-// Debug: Log warning if API_BASE is not configured
-if (!import.meta.env.VITE_API_BASE) {
-  console.warn('⚠️ VITE_API_BASE is not set. API calls may fail. Please set this environment variable.');
+export const API_BASE =
+  envApiBase ||
+  (import.meta.env.PROD ? window.location.origin : '');
+
+// Debug warning only for local development
+if (!envApiBase && !import.meta.env.PROD) {
+  console.warn('VITE_API_BASE is not set. API calls will use the current origin.');
 }

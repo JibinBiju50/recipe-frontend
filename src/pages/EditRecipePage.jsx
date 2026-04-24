@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import {getRecipeDetails, updateRecipe, uploadRecipeImage} from '../service/recipeAPI'
 import toast from 'react-hot-toast';
-import { getCurrentUser } from '../service/authAPI';
+import { rehydrateAuth } from '../service/authAPI';
 
 export default function EditRecipePage(){
     const {recipeId} = useParams();
@@ -25,7 +25,7 @@ export default function EditRecipePage(){
       document.title = "Edit Recipe - Spoonfull";
        const fetchData = async ()=>{
         try{
-            const user = await getCurrentUser();
+            const user = await rehydrateAuth();
             if (!user) {
               toast('Please login to edit a recipe', {
                 icon: '',

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {getUserRecipes, deleteRecipe} from '../service/recipeAPI.js';
 import toast from 'react-hot-toast';
 import RecipeCard from '../components/RecipeCard';
+import { rehydrateAuth } from '../service/authAPI';
 
 const ProfilePage = () => {
   const [recipes, setRecipes] = useState([]);
@@ -13,6 +14,12 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserRecipes = async () => {
       try {
+        const user = await rehydrateAuth();
+        if (!user) {
+          navigate('/login');
+          return;
+        }
+
         const data = await getUserRecipes();
         setRecipes(data);
       } catch (err) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { checkAuth, logout as logoutAPI } from '../service/authAPI';
+import { AUTH_CHANGE_EVENT, checkAuth, hasAuthHint, logout as logoutAPI } from '../service/authAPI';
 import toast from 'react-hot-toast';
 import logo from '../assets/logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,13 +8,28 @@ import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(hasAuthHint());
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
+    const syncAuthState = async () => {
+      if (!hasAuthHint()) {
+        setAuthenticated(false);
+        return;
+      }
       setAuthenticated(await checkAuth());
-    })();
+    };
+
+    const handleAuthChange = (event) => {
+      setAuthenticated(Boolean(event.detail?.authenticated));
+    };
+
+    window.addEventListener(AUTH_CHANGE_EVENT, handleAuthChange);
+    syncAuthState();
+
+    return () => {
+      window.removeEventListener(AUTH_CHANGE_EVENT, handleAuthChange);
+    };
   }, []);
 
   const handleLogout = async () => {

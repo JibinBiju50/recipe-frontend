@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createRecipe, uploadRecipeImage } from '../service/recipeAPI';
 import toast from 'react-hot-toast';
-import { checkAuth } from '../service/authAPI';
+import { rehydrateAuth } from '../service/authAPI';
 
 function AddRecipePage() {
   const navigate = useNavigate(); // Hook to move between pages
@@ -25,7 +25,8 @@ function AddRecipePage() {
   useEffect(() => {
     document.title = "Add Recipe - Spoonfull";
     (async () => {
-      const auth = await checkAuth();
+      const user = await rehydrateAuth();
+      const auth = Boolean(user);
       setIsAuth(auth);
       setAuthChecked(true);
       if (!auth && !toastShown.current) {
