@@ -69,7 +69,7 @@ const ProfilePage = () => {
       {recipes.length === 0 ? (
         <p>You haven't created any recipes yet.</p>
       ) : (
-        <div className="recipe-list">
+        <div className="recipe-list flex flex-row flex-wrap gap-6 justify-start">
           {recipes.map((recipe) => (
             <RecipeCard key={recipe._id} recipe={recipe} onDelete={handleDelete} />
           ))}

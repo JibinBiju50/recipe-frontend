@@ -2,39 +2,49 @@ import { useState, useEffect, useRef } from "react";
 import { searchRecipes } from "../service/recipeAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+
+const MIN_CHARS = 2;       // Start fetching suggestions after 2 characters
+const DEBOUNCE_MS = 300;   // Wait 300ms after the user stops typing
+
 export default function SearchBar({ onSearch }) {
     const [searchItem, setSearchItem] = useState("");
-    const [allRecipes, setAllRecipes] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const inputRef = useRef(null);
+    const debounceTimer = useRef(null);
 
-    // Fetch all recipe titles on mount
+    // Fetch suggestions from API when user types 2+ characters, with debounce
     useEffect(() => {
-        async function fetchAll() {
-            try {
-                const data = await searchRecipes("", 1, 100); // Fetch more recipes for suggestions
-                setAllRecipes(data.recipes.map(r => r.title));
-            } catch {
-                setAllRecipes([]);
-            }
+        // Clear any pending timer from the previous keystroke
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
         }
-        fetchAll();
-    }, []);
 
-    // Filter suggestions as user types
-    useEffect(() => {
-        if (searchItem.trim() === "") {
+        const trimmed = searchItem.trim();
+
+        // Not enough characters — clear suggestions and don't fetch
+        if (trimmed.length < MIN_CHARS) {
             setSuggestions([]);
             setShowSuggestions(false);
             return;
         }
-        const filtered = allRecipes.filter(title =>
-            title.toLowerCase().startsWith(searchItem.toLowerCase())
-        );
-        setSuggestions(filtered);
-        setShowSuggestions(filtered.length > 0);
-    }, [searchItem, allRecipes]);
+
+        // Wait 300ms after the user stops typing, then fetch
+        debounceTimer.current = setTimeout(async () => {
+            try {
+                const data = await searchRecipes(trimmed, 1, 8);
+                const titles = data.recipes.map(r => r.title);
+                setSuggestions(titles);
+                setShowSuggestions(titles.length > 0);
+            } catch {
+                setSuggestions([]);
+                setShowSuggestions(false);
+            }
+        }, DEBOUNCE_MS);
+
+        // Cleanup: cancel the timer if the component unmounts or searchItem changes again
+        return () => clearTimeout(debounceTimer.current);
+    }, [searchItem]);
 
     // Hide suggestions on outside click
     useEffect(() => {
