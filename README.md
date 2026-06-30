@@ -1,13 +1,13 @@
 # Spoonfull Frontend
 
-Spoonfull is the React frontend for a full-stack recipe sharing application. It lets users browse recipes, search by title, view recipe details, register and log in, and manage recipes they created.
+This repository is the React frontend for a full-stack recipe sharing application. It lets users browse recipes, search by title, view recipe details, register and log in, and manage recipes they created.
 
 This app is built with React and Vite, uses React Router for navigation, and communicates with the backend through a REST API.
 
 ## Live App
 
-- Frontend: [https://spoonfullrecipes.netlify.app/](https://spoonfullrecipes.netlify.app/)
-- Backend API: [https://recipe-backend-xdi5.onrender.com](https://recipe-backend-xdi5.onrender.com)
+- Live url: [https://recipe-frontend-1qbh.onrender.com/](https://recipe-frontend-1qbh.onrender.com/)
+- Backend Repository: [https://github.com/JibinBiju50/recipe-backend](https://github.com/JibinBiju50/recipe-backend)
 
 ## Features
 
@@ -17,7 +17,7 @@ This app is built with React and Vite, uses React Router for navigation, and com
 - Register and log in users
 - Show current authentication state in the UI
 - Add new recipes with image upload
-- Edit recipes created by the logged-in user
+- Edit recipes created by the users
 - Delete recipes from the profile page
 - Redirect unauthenticated users from protected pages
 - Refresh expired access tokens with cookie-based auth flow
